@@ -1,6 +1,6 @@
 {
   "name": "nodefu",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Express middleware to easily save files sent through multipart/form-data to disk.",
   "main": "index.js",
   "scripts": {
