@@ -20,7 +20,7 @@
     "url": "https://github.com/cesarvargas00/nodefu"
   },
   "author": "Cesar Vargas <cesarvargas00@gmail.com> (http://cesarvargas.org)",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "busboy": "^0.2.9"
   }
