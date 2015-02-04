@@ -1,0 +1,27 @@
+{
+  "name": "nodefu",
+  "version": "1.0.0",
+  "description": "Express middleware to easily save files sent through multipart/form-data to disk.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "upload",
+    "node",
+    "file",
+    "uploader",
+    "multipart",
+    "middleware",
+    "express"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cesarvargas00/nodefu"
+  },
+  "author": "Cesar Vargas <cesarvargas00@gmail.com> (http://cesarvargas.org)",
+  "license": "ISC",
+  "dependencies": {
+    "busboy": "^0.2.9"
+  }
+}
