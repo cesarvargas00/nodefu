@@ -1,14 +1,14 @@
 Description
 ===========
-
 An Express middleware to easily save files sent through multipart/form-data on the disk
-
 
 Requirements
 ============
 
 * [node.js](http://nodejs.org/) -- v0.8.0 or newer
 * [busboy](https://www.npmjs.com/package/busboy) -- v0.2.9 or newer
+* [gridfs-stream](https://www.npmjs.com/package/gridfs-stream) -- v0.5.3 or newer
+* [mongodb](https://www.npmjs.com/package/mongodb) -- v1.4.30 (haven't tested with ~2.0)
 
 
 Install
@@ -27,9 +27,7 @@ var app = express()
 app.use(nodefu())
 ```
 
-
 You can access the files in the `request` object and save them to disk like this:
-
 
 ```js
 req.files.fieldName.toFile(path,[filename],callback);
@@ -37,7 +35,16 @@ req.files.fieldName.toFile(path,[filename],callback);
 * `fieldName`: the name of the input field on your html
 * `path`: string containing the save path
 * `filename`: optional parameter string that specifies the name of the file ( if none is passed, the file name will be the same )
-* `callback`: callback function
+* `callback`: callback function with **err** and **data** attributes, respectively
+
+And to save the uploaded files to **mongodb**, this is how you do it:
+
+```js
+req.files.fieldName.toMongo([filename],callback);
+```
+* `fieldName`: the name of the input field on your html
+* `filename`: optional parameter string that specifies the name of the file ( if none is passed, the file name will be the same )
+* `callback`: callback function with **err** and **data** attributes, respectively
 
 ##### HTML
 

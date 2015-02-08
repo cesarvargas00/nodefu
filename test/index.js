@@ -3,12 +3,15 @@ var request = require('supertest'),
     nodefu = require('../index.js'),
     should = require('should'),
     assert = require('assert'),
-    fs = require('fs');
+    mongo = require('mongodb'),
+    fs = require('fs'),
+    MongoClient = require('mongodb').MongoClient;
 var app;
+var mongoPath = 'mongodb://127.0.0.1:27017/test';
 
 beforeEach(function() {
     app = express();
-    app.use(nodefu());
+    app.use(nodefu(mongoPath));
 });
 
 describe('The express middleware', function() {
@@ -40,9 +43,10 @@ describe('The express middleware', function() {
     });
 });
 describe('Saving file to disk', function() {
+
     it('should save a file on disk', function(done) {
         app.post('/saveToDisk', function(req, res) {
-            req.files.fieldName.toFile('./', 'serverSide.png', function() {
+            req.files.fieldName.toFile('./', 'serverSide.png', function(err, data) {
                 res.sendStatus(200);
             });
         });
@@ -58,7 +62,7 @@ describe('Saving file to disk', function() {
 
     it('should be able to save multiple files', function(done) {
         app.post('/saveToDisk', function(req, res) {
-            req.files.fieldName.toFile('./', 'serverSide.png', function() {
+            req.files.fieldName.toFile('./', 'serverSide.png', function(err, data) {
                 req.files['fieldName2'].toFile('./', 'serverSide2.png', function() {
                     res.sendStatus(200);
                 });
@@ -79,5 +83,33 @@ describe('Saving file to disk', function() {
     after(function() {
         fs.unlinkSync('serverSide.png');
         fs.unlinkSync('serverSide2.png');
+    });
+});
+
+describe('Saving file to mongo', function() {
+    it('should save to mongo', function(done) {
+        app.post('/save', function(req, res) {
+            req.files.fieldName.toMongo('testing.png', function(err, data) {
+                res.locals.fileId = data;
+                res.json({
+                    _id: data._id
+                });
+            });
+        });
+        request(app)
+            .post('/save')
+            .attach('fieldName', './fixture/image.png')
+            .end(function(err, res) {
+                var Grid = require('gridfs-stream');
+                MongoClient.connect(mongoPath, function(_err, db) {
+                    var gfs = Grid(db, mongo);
+                    gfs.exist(res.body, function(err, found) {
+                        found.should.be.ok;
+                        if (found) gfs.remove(res.body,function(){
+                            done();
+                        });
+                    });
+                });
+            });
     });
 });
