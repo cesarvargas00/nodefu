@@ -1,6 +1,6 @@
 Description
 ===========
-An Express middleware to easily save files sent through multipart/form-data on the disk
+multipart/form-data saving to disk made easy.
 
 Requirements
 ============
@@ -16,7 +16,6 @@ Install
 
     npm install nodefu
 
-
 #### Usage
 
 ```js
@@ -30,17 +29,23 @@ app.use(nodefu())
 You can access the files in the `request` object and save them to disk like this:
 
 ```js
-req.files.fieldName.toFile(path,[filename],callback);
+req.files.fieldName.toFile(path,[filename],callback)
 ```
 * `fieldName`: the name of the input field on your html
 * `path`: string containing the save path
 * `filename`: optional parameter string that specifies the name of the file ( if none is passed, the file name will be the same )
 * `callback`: callback function with **err** and **data** attributes, respectively
 
-And to save the uploaded files to **mongodb**, this is how you do it:
+And to save the uploaded files to **mongodb**, first you have to specify the mongodb path when using the middleware:
 
 ```js
-req.files.fieldName.toMongo([filename],callback);
+app.use(nodefu('mongodb://127.0.0.1:27017/test'))
+```
+
+
+And now you can call this method from the request object:
+```js
+req.files.fieldName.toMongo([filename],callback)
 ```
 * `fieldName`: the name of the input field on your html
 * `filename`: optional parameter string that specifies the name of the file ( if none is passed, the file name will be the same )
