@@ -9,6 +9,7 @@ var Grid = require('gridfs-stream');
 module.exports = function(mongoPath) {
     return function(req, res, next) {
         req.files = [];
+        req.fields = {};
         if (!req.headers['content-type']) next();
         else {
             var busboy = new Busboy({

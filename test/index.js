@@ -1,3 +1,5 @@
+'use strict';
+
 var request = require('supertest'),
     express = require('express'),
     nodefu = require('../index.js'),
@@ -25,7 +27,40 @@ describe('The express middleware', function() {
 
         request(app)
             .post('/')
-            .attach('fieldName', './fixture/image.png')
+            .attach('fieldName', 'test/fixture/image.png')
+            .expect(200, done);
+    });
+
+    it('should put a fields attribute on req', function(done) {
+        app.post('/', function(req, res) {
+            if (req.fields)
+                res.sendStatus(200);
+            else res.sendStatus(500);
+        });
+
+        request(app)
+            .post('/')
+            .field('name', 'Cesar Vargas')
+            .attach('fieldName', 'test/fixture/image.png')
+            .expect(200, done);
+    });
+
+    it('should let the fields attribute on req empty if no fields', function(done) {
+        app.post('/', function(req, res) {
+            var length = 0;
+            for (var k in req.fields) {
+                if (req.fields.hasOwnProperty(k)) {
+                    length += 1;
+                }
+            }
+            if (length === 0)
+                res.sendStatus(200);
+            else res.sendStatus(500);
+        });
+
+        request(app)
+            .post('/')
+            .attach('fieldName', 'test/fixture/image.png')
             .expect(200, done);
     });
 
@@ -53,7 +88,7 @@ describe('Saving file to disk', function() {
 
         request(app)
             .post('/saveToDisk')
-            .attach('fieldName', './fixture/image.png')
+            .attach('fieldName', 'test/fixture/image.png')
             .end(function(err, res) {
                 fs.existsSync('serverSide.png').should.be.ok;
                 done();
@@ -70,8 +105,8 @@ describe('Saving file to disk', function() {
         });
         request(app)
             .post('/saveToDisk')
-            .attach('fieldName', './fixture/image.png')
-            .attach('fieldName2', './fixture/image2.png')
+            .attach('fieldName', 'test/fixture/image.png')
+            .attach('fieldName2', 'test/fixture/image2.png')
             .end(function(err, res) {
                 fs.existsSync('serverSide.png').should.be.ok;
                 fs.existsSync('serverSide2.png').should.be.ok;
@@ -98,14 +133,14 @@ describe('Saving file to mongo', function() {
         });
         request(app)
             .post('/save')
-            .attach('fieldName', './fixture/image.png')
+            .attach('fieldName', 'test/fixture/image.png')
             .end(function(err, res) {
                 var Grid = require('gridfs-stream');
                 MongoClient.connect(mongoPath, function(_err, db) {
                     var gfs = Grid(db, mongo);
                     gfs.exist(res.body, function(err, found) {
                         found.should.be.ok;
-                        if (found) gfs.remove(res.body,function(){
+                        if (found) gfs.remove(res.body, function() {
                             done();
                         });
                     });
