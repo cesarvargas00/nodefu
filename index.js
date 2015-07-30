@@ -1,3 +1,4 @@
+'use strict';
 var fs = require('fs');
 var Busboy = require('busboy');
 var path = require('path');
@@ -13,7 +14,7 @@ module.exports = function(mongoPath) {
             var busboy = new Busboy({
                 headers: req.headers
             });
-            busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
+            busboy.on('file', function(fieldname, file, filename) {
                 req.files[fieldname] = {
                     toFile: function(pwd, _filename, cb) {
                         if (typeof _filename === 'function') {
@@ -35,7 +36,7 @@ module.exports = function(mongoPath) {
                         }
                         MongoClient.connect(mongoPath, function(_err, db) {
                             if (_err) cb(_err, undefined);
-                            var gfs = Grid(db, mongodb);
+                            var gfs = new Grid(db, mongodb);
                             var writeStream = gfs.createWriteStream({
                                 filename: _filename
                             });
@@ -48,6 +49,8 @@ module.exports = function(mongoPath) {
                     }
                 };
                 next();
+            }).on('field', function(fieldname, val) {
+                req.fields[fieldname] = val;
             });
             req.pipe(busboy);
         }
