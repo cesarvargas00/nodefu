@@ -51,11 +51,25 @@ req.files.fieldName.toMongo([filename],callback)
 * `filename`: optional parameter string that specifies the name of the file ( if none is passed, the file name will be the same )
 * `callback`: callback function with **err** and **data** attributes, respectively
 
+
+You can also access data passed through multipart/form-data other than files using
+
+```js
+req.fields.otherFieldName
+```
+
 ##### HTML
 
 ```html
 <form id="uploadForm" enctype="multipart/form-data" action="/actionRoute" method="post">
     <input type="file" name="fieldName"></input>
+    <input type="text" name="otherFieldName"></input>
     <input type="submit" name="submit" value="Upload File"></input>
 </form>
 ```
+
+##### Angular
+
+If you are using angular, I recommend using the `ng-file-upload` module. You can check it out on [here](https://github.com/danialfarid/ng-file-upload "ng-file-upload").
+
+->♥<-
