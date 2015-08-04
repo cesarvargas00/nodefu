@@ -10,7 +10,8 @@ module.exports = function(mongoPath) {
     return function(req, res, next) {
         req.files = [];
         req.fields = {};
-        if (!req.headers['content-type']) next();
+        var headers = req.headers['content-type'];
+        if (!headers || headers.slice(0,19) !== 'multipart/form-data') next();
         else {
             var busboy = new Busboy({
                 headers: req.headers
