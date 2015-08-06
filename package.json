@@ -24,7 +24,8 @@
   "dependencies": {
     "busboy": "^0.2.9",
     "gridfs-stream": "^0.5.3",
-    "mongodb": "^1.4.30"
+    "mongodb": "^1.4.30",
+    "streamifier": "^0.1.1"
   },
   "devDependencies": {
     "express": "^4.11.2",

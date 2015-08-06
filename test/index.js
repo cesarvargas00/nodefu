@@ -113,8 +113,6 @@ describe('Saving file to disk', function() {
                 done();
             });
     });
-
-
     after(function() {
         fs.unlinkSync('serverSide.png');
         fs.unlinkSync('serverSide2.png');
