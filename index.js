@@ -17,6 +17,7 @@ module.exports = function(mongoPath) {
             var busboy = new Busboy({
                 headers: req.headers
             });
+            var fieldCount = 1;
             busboy.on('file', function(fieldname, file, filename) {
                 var buffer = [];
                 file.on('data', function(chunk) {
@@ -30,6 +31,11 @@ module.exports = function(mongoPath) {
                     //The first function is responsible for saving the buffer we just saved to a file.
                     //The second function is responsible for saving the buffer we just saved to mongodb.
                     //I think I should implement a third function that only returns a readableStream, so we can pipe it inside the route function.
+                    if (req.files.hasOwnProperty(fieldname)){ //checks for duplicate keys
+                      fieldname += fieldCount;
+                      fieldCount += 1;
+                    }
+
                     req.files[fieldname] = {
                         toFile: function(pwd, _filename, cb) {
                             if (typeof _filename === 'function') {
