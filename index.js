@@ -7,16 +7,14 @@ var mongodb = require('mongodb');
 var Grid = require('gridfs-stream');
 var streamifier = require('streamifier');
 
-module.exports = function(mongoPath) {
+module.exports = function(mongoPath, config) {
     return function(req, res, next) {
         req.files = [];
         req.fields = {};
         var headers = req.headers['content-type'];
         if (!headers || headers.slice(0, 19) !== 'multipart/form-data') next();
         else {
-            var busboy = new Busboy({
-                headers: req.headers
-            });
+            var busboy = config ? new Busboy({ headers: req.headers }) : new Busboy(config);
             var fieldCount = 1;
             busboy.on('file', function(fieldname, file, filename) {
                 var buffer = [];
