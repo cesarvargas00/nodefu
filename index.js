@@ -14,7 +14,7 @@ module.exports = function(mongoPath, config) {
         var headers = req.headers['content-type'];
         if (!headers || headers.slice(0, 19) !== 'multipart/form-data') next();
         else {
-            var busboy = config ? new Busboy({ headers: req.headers }) : new Busboy(config);
+            var busboy = config ? new Busboy(config) : new Busboy({ headers: req.headers });
             var fieldCount = 1;
             busboy.on('file', function(fieldname, file, filename) {
                 var buffer = [];
